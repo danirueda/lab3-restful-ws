@@ -101,6 +101,7 @@ public class AddressBookServiceTest {
         response = client.target("http://localhost:8282/contacts")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(juan, MediaType.APPLICATION_JSON));
+        assertEquals(200,response.getStatus());
         juanUpdated = response.readEntity(Person.class);
         assertEquals(1, juanUpdated.getId()); //Checking if it's idempotent
         assertEquals(before,ab.getPersonList().size()); //Checking if it's safe
@@ -161,6 +162,7 @@ public class AddressBookServiceTest {
         int before = ab.getPersonList().size();
         response = client.target("http://localhost:8282/contacts/person/3")
                 .request(MediaType.APPLICATION_JSON).get();
+		assertEquals(200,response.getStatus());
         mariaUpdated = response.readEntity(Person.class);
         assertEquals(3,mariaUpdated.getId()); //Checking if it's idempotent
         assertEquals(before,ab.getPersonList().size()); //Checking if it's safe
@@ -200,14 +202,15 @@ public class AddressBookServiceTest {
         response = client.target("http://localhost:8282/contacts")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(juan, MediaType.APPLICATION_JSON));
-
+        assertEquals(200,response.getStatus());
+        addressBookRetrieved = response.readEntity(AddressBook.class);
         //Cheking if it's safe
         assertEquals(before,addressBookRetrieved.getPersonList().size());
 
         response = client.target("http://localhost:8282/contacts")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(juan, MediaType.APPLICATION_JSON));
-
+        assertEquals(200,response.getStatus());
         Person juanUpdated = response.readEntity(Person.class);
         assertEquals(juan.getId(),juanUpdated.getId()); //Checking if it's idempotent
 	}
